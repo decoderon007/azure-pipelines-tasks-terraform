@@ -12,7 +12,7 @@ The two tasks contained within this extension are
 
 ### Disabling Telemetry Collection
 
-Telemetry collection can be disabled by setting the `allowTelemetryCollection` property to `false.
+Telemetry collection can be disabled by setting the `allowTelemetryCollection` property to `false`.
 
 From classic pipeline editor, uncheck the `Allow Telemetry Collection` checkbox to disable
 telemetry collection.
