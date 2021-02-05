@@ -26,6 +26,11 @@ jobs:
         workingDir: $(terraform_extension_dir)
         command: ci
     - task: Npm@1
+      displayName: compile  
+      inputs:
+        workingDir: $(terraform_extension_dir)
+        command: compile
+    - task: Npm@1
       displayName: pack
       inputs:  
         workingDir: $(terraform_extension_dir)
