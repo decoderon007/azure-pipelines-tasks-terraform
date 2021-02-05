@@ -120,5 +120,7 @@ dist
 # tfx runtime files
 .taskkey
 
-
 .terraform.lock.hcl
+dist/
+
+azure-pipelines-tasks-terraform.code-workspace

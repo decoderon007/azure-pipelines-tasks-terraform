@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "This contains the Azure Pipelines tasks for installing and executing terraform commands.",
   "scripts": {
+    "clean": "rimraf ./dist",
+    "compile": "npm run clean && webpack --mode production",
+    "compile:dev": "npm run clean && webpack --mode development",
+    "package:tasks": "cd TerraformInstaller && npm run pack && cd ../TerraformCLI && npm run pack && cd ../TerraformDisplay && npm run pack && cd ../",
     "pack": "cross-var ./node_modules/.bin/tfx extension create --manifests vss-extension.json --output-path .bin --override { \\\"version\\\" : \\\"$npm_package_version\\\" }",
     "publish": "cross-var ./node_modules/.bin/tfx extension publish --vsix .bin/charleszipp.azure-pipelines-tasks-terraform-$npm_package_version.vsix"
   },
@@ -16,8 +20,38 @@
     "url": "https://github.com/charleszipp/azure-pipelines-tasks-terraform/issues"
   },
   "homepage": "https://github.com/charleszipp/azure-pipelines-tasks-terraform#readme",
+  "dependencies": {
+    "azure-devops-extension-api": "^1.158.0",
+    "azure-devops-extension-sdk": "^2.0.7",
+    "azure-devops-ui": "^1.152.2",
+    "dotenv": "^8.2.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
   "devDependencies": {
+    "@types/react": "^16.8.18",
+    "@types/react-dom": "^16.8.4",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
+    "ansi_up": "^4.0.4",
+    "base64-inline-loader": "^1.1.1",
+    "copy-webpack-plugin": "^5.0.3",
     "cross-var": "^1.1.0",
-    "tfx-cli": "^0.8.3"
+    "css-loader": "^2.1.1",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "file-loader": "^3.0.1",
+    "node-sass": "^4.12.0",
+    "prettier": "^1.17.1",
+    "rimraf": "^2.6.3",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "tfx-cli": "^0.8.3",
+    "ts-loader": "^6.0.1",
+    "typescript": "^3.4.5",
+    "webpack": "^4.32.1",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.4.1"
   }
 }

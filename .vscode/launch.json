@@ -3,7 +3,22 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [        
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "debug - tasks/terraform-installer",
+            "cwd": "${workspaceFolder}/tasks/terraform-installer",
+            "envFile": "${workspaceFolder}/tasks/terraform-installer/.env",
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"                
+            ],
+            "args": [
+                "${workspaceFolder}/tasks/terraform-installer/src/index.ts"
+            ],
+            "outputCapture": "std"
+        },     
         {
             "type": "node",
             "request": "launch",
@@ -16,6 +31,21 @@
             ],
             "args": [
                 "${workspaceFolder}/tasks/terraform-cli/src/index.ts"
+            ],
+            "outputCapture": "std"
+        },     
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "debug - tasks/terraform-display",
+            "cwd": "${workspaceFolder}/tasks/terraform-display",
+            "envFile": "${workspaceFolder}/tasks/terraform-display/.env",
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"                
+            ],
+            "args": [
+                "${workspaceFolder}/tasks/terraform-display/src/index.ts"
             ],
             "outputCapture": "std"
         },
@@ -39,22 +69,41 @@
                 "-p", "default",
                 "--name", "${input:testScenario}"
             ]
-        },        
+        },
         {
             "type": "node",
             "request": "launch",
-            "name": "debug - tasks/terraform-installer",
-            "cwd": "${workspaceFolder}/tasks/terraform-installer",
-            "envFile": "${workspaceFolder}/tasks/terraform-installer/.env",
-            "runtimeArgs": [
-                "-r",
-                "ts-node/register"                
-            ],
+            "name": "debug:tests - tasks/terraform-display",
+            "program": "${workspaceFolder}/tasks/terraform-display/node_modules/cucumber/bin/cucumber-js",
+            "cwd": "${workspaceFolder}/tasks/terraform-display",
             "args": [
-                "${workspaceFolder}/tasks/terraform-installer/src/index.ts"
-            ],
-            "outputCapture": "std"
+                "-p", "default"
+            ]
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "debug:test - tasks/terraform-display",
+            "program": "${workspaceFolder}/tasks/terraform-display/node_modules/cucumber/bin/cucumber-js",
+            "cwd": "${workspaceFolder}/tasks/terraform-display",
+            "args": [
+                "-p", "default",
+                "--name", "${input:testScenario}"
+            ]
+        },
+        {
+          "name": "debug - terraform-display",
+          "type": "chrome",
+          "request": "launch",
+          "url": "https://localhost:3000/",
+          "reAttach": true,
+          "pathMappings": [
+            {
+              "url": "webpack:///",
+              "path": "${workspaceFolder}/"
+            }
+          ]
+        }
     ],
     "inputs": [
         {
