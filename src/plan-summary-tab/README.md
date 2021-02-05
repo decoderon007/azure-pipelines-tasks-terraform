@@ -16,7 +16,7 @@ From the root project directory:
 
 1. Run `npm i` to install required packages
 2. Run `npm run compile:test` to compile the tab with test data
-3. If using VSCode you can use the Run/Debug Launch command `Debug Plan Summary Tab - Chrome`
+3. If using VSCode you can use the Run/Debug Launch command `debug:test - summary tab - Chrome`
     - Alternatively you can open the `./dist/plan-summary-tab/plan-summary-tab.html` file in a browser of your choice
     - For breakpoints to be enabled you will need to launch Chrome with the `--remote-debugging-port=9222` command line option.
     For more information on this CLI option consult the `Debugger for Chrome` VSCode extension.

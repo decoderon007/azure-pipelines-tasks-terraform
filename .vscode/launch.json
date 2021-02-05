@@ -56,7 +56,7 @@
             ]
         },
         {
-            "name": "Debug Plan Summary Tab - Chrome",
+            "name": "debug:test - summary tab - Chrome",
             "type": "chrome",
             "request": "launch",
             "url": "file:///${workspaceFolder}/dist/plan-summary-tab/plan-summary-tab.html",
