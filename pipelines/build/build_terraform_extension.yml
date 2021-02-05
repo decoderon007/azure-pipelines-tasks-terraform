@@ -14,11 +14,6 @@ jobs:
       inputs: 
         artifact: terraform_cli
         path: $(terraform_extension_dir)
-    - task: DownloadPipelineArtifact@2
-      displayName: download terraform display
-      inputs: 
-        artifact: terraform_display
-        path: $(terraform_extension_dir)
     - task: Npm@1
       displayName: version
       inputs:

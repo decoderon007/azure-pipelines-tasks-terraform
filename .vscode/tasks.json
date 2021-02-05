@@ -106,51 +106,6 @@
 			]
 		},
 		{
-			"type": "typescript",
-			"tsconfig": "tasks/terraform-display/tsconfig.json",
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "build",
-			"label": "build - tasks/terraform-display"
-		},
-		{
-			"type": "npm",
-			"script": "install",
-			"path": "tasks/terraform-display/",
-			"problemMatcher": [],
-			"label": "install - tasks/terraform-display",
-			"detail": "install dependencies from package"
-		},
-		{
-			"type": "npm",
-			"script": "start",
-			"path": "tasks/terraform-display/",
-			"problemMatcher": [],
-			"label": "start - tasks/terraform-display",
-			"detail": "ts-node --require dotenv/config ./src/index.ts"
-		},
-		{
-			"type": "npm",
-			"script": "test",
-			"path": "tasks/terraform-display/",
-			"group": "test",
-			"problemMatcher": [],
-			"label": "test - tasks/terraform-display",
-			"detail": "ts-mocha ./src/tests/_suite.ts"
-		},
-		{
-			"type": "npm",
-			"script": "pack",
-			"path": "tasks/terraform-display/",
-			"problemMatcher": [],
-			"label": "pack - tasks/terraform-display",
-			"dependsOn": [
-				"install - tasks/terraform-display",
-				"build - tasks/terraform-display"
-			]
-		},
-		{
 			"type": "npm",
 			"script": "install",
 			"path": ".",
@@ -167,7 +122,6 @@
 			"dependsOn": [
 				"pack - tasks/terraform-cli",
 				"pack - tasks/terraform-installer",
-				"pack - tasks/terraform-display",
 				"install - extension"
 			],
 			"dependsOrder": "parallel"

@@ -5,7 +5,6 @@ parameters:
     - plan_with_command_options_var_file.yml
     - init_with_self_configured_backend.yml
     - init_with_ensure_backend_no_storage_account.yml
-    - display_plan_single.yml
     - publish_plan_results.yml
 
 stages:

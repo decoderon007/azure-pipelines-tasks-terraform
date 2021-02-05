@@ -33,21 +33,6 @@
                 "${workspaceFolder}/tasks/terraform-cli/src/index.ts"
             ],
             "outputCapture": "std"
-        },     
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "debug - tasks/terraform-display",
-            "cwd": "${workspaceFolder}/tasks/terraform-display",
-            "envFile": "${workspaceFolder}/tasks/terraform-display/.env",
-            "runtimeArgs": [
-                "-r",
-                "ts-node/register"                
-            ],
-            "args": [
-                "${workspaceFolder}/tasks/terraform-display/src/index.ts"
-            ],
-            "outputCapture": "std"
         },
         {
             "type": "node",
@@ -65,27 +50,6 @@
             "name": "debug:test - tasks/terraform-cli",
             "program": "${workspaceFolder}/tasks/terraform-cli/node_modules/cucumber/bin/cucumber-js",
             "cwd": "${workspaceFolder}/tasks/terraform-cli",
-            "args": [
-                "-p", "default",
-                "--name", "${input:testScenario}"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "debug:tests - tasks/terraform-display",
-            "program": "${workspaceFolder}/tasks/terraform-display/node_modules/cucumber/bin/cucumber-js",
-            "cwd": "${workspaceFolder}/tasks/terraform-display",
-            "args": [
-                "-p", "default"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "debug:test - tasks/terraform-display",
-            "program": "${workspaceFolder}/tasks/terraform-display/node_modules/cucumber/bin/cucumber-js",
-            "cwd": "${workspaceFolder}/tasks/terraform-display",
             "args": [
                 "-p", "default",
                 "--name", "${input:testScenario}"
