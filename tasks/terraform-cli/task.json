@@ -245,6 +245,15 @@
             "required": false,
             "helpMarkDown": "Lock ID which needs to be forcefully removed",
             "groupName": "forceUnlockArguments"
+        },
+        {
+            "name": "publishPlanResults",
+            "type": "boolean",
+            "label": "Publish Plan Results",
+            "defaultValue": "false",
+            "required": false,
+            "visibleRule": "command = plan",
+            "helpMarkDown": "If checked, the plan results will be published to the pipeline run."
         }
     ],
     "execution": {

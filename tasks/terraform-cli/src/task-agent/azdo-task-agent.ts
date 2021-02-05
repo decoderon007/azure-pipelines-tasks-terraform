@@ -43,4 +43,15 @@ export default class TaskAgent implements ITaskAgent {
         tasks.debug(`Secure file available at: ${filePath}`);
         return filePath;
     }
+
+    attachNewFile(workingDirectory: string, name: string, content: string){
+        const filePath = this.writeFile(workingDirectory, name, content);
+        tasks.addAttachment(name, name, filePath);
+    }
+
+    writeFile(workingDirectory: string, fileName: string, content: string): string {
+        const filePath = tasks.resolve(workingDirectory, fileName);
+        tasks.writeFile(filePath, content);
+        return filePath;
+    }
 }

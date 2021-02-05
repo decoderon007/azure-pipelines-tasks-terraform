@@ -92,6 +92,11 @@ export class TaskContextSteps {
         this.ctx.runAzLogin = true;
     }
 
+    @given("publish plan result is enabled")
+    public publishPlanResultIsEnabled(){
+        this.ctx.publishPlanResults = true;
+    }
+
     @then("pipeline variable {string} is set to {string}")
     public pipelineVariableIsSet(key: string, value: string){
         const variable = this.ctx.variables[key];

@@ -6,6 +6,7 @@ parameters:
     - init_with_self_configured_backend.yml
     - init_with_ensure_backend_no_storage_account.yml
     - display_plan_single.yml
+    - publish_plan_results.yml
 
 stages:
 - stage: test

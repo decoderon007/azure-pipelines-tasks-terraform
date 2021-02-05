@@ -118,6 +118,9 @@ export default class AzdoTaskContext implements ITaskContext {
     get runAzLogin() {
         return this.getBoolInput("runAzLogin");
     }
+    get publishPlanResults() {
+        return this.getBoolInput("publishPlanResults");
+    }
     finished() {
         this.finishedAt = process.hrtime(this.startedAt);
         this.runTime = this.finishedAt[1] / 1000000;

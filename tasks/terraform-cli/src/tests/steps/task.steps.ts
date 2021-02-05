@@ -7,10 +7,13 @@ import { TableDefinition } from 'cucumber';
 import { MockTaskContext } from '../../context';
 import { CommandStatus } from '../../commands';
 import { _startsWith } from 'azure-pipelines-task-lib/internal';
+import fs from 'fs';
 
 
 @binding([TaskRunner, MockTaskContext, TaskAnswers])
 export class TerraformSteps {
+    
+    private readonly detailAttachmentName: string = "tfplan.txt";
     constructor(
         private test: TaskRunner, 
         private ctx: MockTaskContext,
@@ -126,5 +129,26 @@ export class TerraformSteps {
         if(this.test.error){
             expect(this.test.error.message).to.eq(message);
         }
+    }
+
+    @then("the plan details are attached with the following content from file {string}")
+    public planDetailsAreAttachedWithTheFollowingContentFromFile(filePath: string){
+        const actualPlan = this.expectAttachmentContent(this.detailAttachmentName);
+        const expectedPlan = fs.readFileSync(filePath, 'utf-8');
+        
+        expect(actualPlan).to.eq(expectedPlan);
+    }
+
+    @then("the plan details are not attached")
+    public planDetailsAreNotAttached(){
+        expect(this.test.taskAgent.attachedFiles[this.detailAttachmentName]).to.be.undefined;
+    }
+
+    private expectAttachmentContent(name: string){
+        const attachment = this.test.taskAgent.attachedFiles[name];
+        expect(attachment).not.does.be.undefined;
+        const content = this.test.taskAgent.writtenFiles[attachment.path];
+        expect(content).not.does.be.undefined;
+        return content;
     }
 }

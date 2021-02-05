@@ -2,7 +2,7 @@ import { CommandResponse, ICommand } from ".";
 import { ITaskContext } from "../context";
 import { ITerraformProvider } from "../providers";
 import AzureRMProvider from "../providers/azurerm";
-import { IRunner } from "../runners";
+import { IRunner, RunnerResult } from "../runners";
 import { RunWithTerraform } from "../runners/builders";
 import { ITaskAgent } from "../task-agent";
 
@@ -35,6 +35,10 @@ export class TerraformPlan implements ICommand {
 
         this.setPlanHasChangesVariable(ctx, result.exitCode);
 
+        if(ctx.publishPlanResults){
+            this.publishPlanResults(ctx, result);
+        }
+
         return result.toCommandResponse();
     }
 
@@ -57,5 +61,9 @@ export class TerraformPlan implements ICommand {
     private setPlanHasChangesVariable(ctx: ITaskContext, exitCode: number): void{
         let planHasChanges:boolean = exitCode === this.getPlanHasChangesExitCode(ctx.commandOptions);
         ctx.setVariable("TERRAFORM_PLAN_HAS_CHANGES", planHasChanges.toString(), false);
+    }
+
+    private publishPlanResults(ctx: ITaskContext, result: RunnerResult): void{
+        this.taskAgent.attachNewFile(ctx.cwd, "tfplan.txt", result.stdout);
     }
 }

@@ -13,16 +13,17 @@ export default class TaskRunner {
     error?: Error;
     response?: CommandResponse;
     logs: string[] = [];
+    public readonly taskAgent: MockTaskAgent;
 
     constructor() {        
+        this.taskAgent = new MockTaskAgent();
     }
 
     public async run(taskContext: ITaskContext, taskAnswers: ma.TaskLibAnswers) {        
         const toolFactory = new MockToolFactory();
-        const taskAgent = new MockTaskAgent()
         const logger = new TaskLogger(taskContext, tasks)
         const runner = new AzdoRunner(toolFactory, logger);
-        const task = new Task(taskContext, runner, taskAgent, logger);
+        const task = new Task(taskContext, runner, this.taskAgent, logger);
         setAnswers(taskAnswers);
         try{
             //separate the stdout from task and cucumbers test

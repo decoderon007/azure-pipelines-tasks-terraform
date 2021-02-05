@@ -1,8 +1,19 @@
-import { defaultCipherList } from "constants";
+import path from "path";
 import { ITaskAgent } from ".";
 
 export default class TaskAgentMock implements ITaskAgent {
-    constructor() {
+    public readonly attachedFiles: { [name: string]: { type: string, path: string } } = {};
+    public readonly writtenFiles: { [path: string]: string } = {};
+
+    attachNewFile(workingDirectory: string, name: string, content: string): void {
+        const filePath = this.writeFile(workingDirectory, name, content);
+        this.attachedFiles[name] = { type: name, path: filePath };
+    }
+
+    writeFile(workingDirectory: string, fileName: string, content: string): string {
+        const filePath = path.join(workingDirectory, fileName);
+        this.writtenFiles[filePath] = content;
+        return filePath;
     }
 
     async downloadSecureFile(secureFileId: string): Promise<string> {
