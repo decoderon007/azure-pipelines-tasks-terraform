@@ -310,4 +310,6 @@ Terraform will perform the following actions:
     }
 
 [0m[1mPlan:[0m 0 to add, 10 to change, 0 to destroy.[0m
-`
+`;
+
+export const exampleSummary = `{"resources":{"toCreate":1,"toDelete":0,"toUpdate":0,"unchanged":0},"outputs":{"toCreate":7,"toDelete":0,"toUpdate":0,"unchanged":0}}`;

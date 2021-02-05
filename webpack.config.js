@@ -1,6 +1,10 @@
 const path = require("path");
 const fs = require("fs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const webpack = require('webpack');
+const yargs = require('yargs');
+
+const testCompile = yargs.boolean("test").argv;
 
 const entries = {};
 const srcDir = path.join(__dirname, "src");
@@ -64,5 +68,10 @@ module.exports = {
       }
     ]
   },
-  plugins: [new CopyWebpackPlugin([{ from: "**/*.html", context: "src" }])]
+  plugins: [
+    new CopyWebpackPlugin([{ from: "**/*.html", context: "src" }]),
+    new webpack.DefinePlugin({
+      'process.env.TEST': testCompile.test
+    })
+  ]
 };

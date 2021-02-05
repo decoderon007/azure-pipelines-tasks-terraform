@@ -11,13 +11,10 @@
     "outDir": "dist/",
     "jsx": "react",
     "lib": ["es6", "dom"],
-    "types": ["react"]
+    "types": ["react", "node"],
   },
   "exclude": [
       "node_modules",
-      "typings",
-      "TerraformCLI",
-      "TerraformDisplay",
-      "TerraformInstaller"
+      "tasks"
   ]
 }
