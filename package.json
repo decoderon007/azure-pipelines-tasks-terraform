@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "description": "This contains the Azure Pipelines tasks for installing and executing terraform commands.",
   "scripts": {
+    "postinstall": "cd ./tasks/terraform-installer && npm i && cd ../terraform-cli && npm i && cd ../../",
     "clean": "rimraf ./dist",
     "compile": "npm run clean && webpack --mode production",
     "compile:dev": "npm run clean && webpack --mode development",
     "compile:test": "npm run clean && webpack --mode development --test",
-    "package:tasks": "cd TerraformInstaller && npm run pack && cd ../TerraformCLI && npm run pack && cd ../TerraformDisplay && npm run pack && cd ../",
+    "package:tasks": "cd ./tasks/terraform-installer && npm run pack && cd ../terraform-cli && npm run pack && cd ../../",
     "pack": "cross-var ./node_modules/.bin/tfx extension create --manifests vss-extension.json --output-path .bin --override { \\\"version\\\" : \\\"$npm_package_version\\\" }",
-    "publish": "cross-var ./node_modules/.bin/tfx extension publish --vsix .bin/charleszipp.azure-pipelines-tasks-terraform-$npm_package_version.vsix"
+    "publish": "cross-var ./node_modules/.bin/tfx extension publish --vsix .bin/charleszipp.azure-pipelines-tasks-terraform-$npm_package_version.vsix",
+    "install:extension": "cross-var ./node_modules/.bin/tfx extension install --vsix .bin/charleszipp.azure-pipelines-tasks-terraform-$npm_package_version.vsix"
   },
   "repository": {
     "type": "git",
