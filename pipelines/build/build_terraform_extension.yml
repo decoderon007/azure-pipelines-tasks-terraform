@@ -29,7 +29,8 @@ jobs:
       displayName: compile  
       inputs:
         workingDir: $(terraform_extension_dir)
-        command: run compile
+        command: custom
+        customCommand: run compile
     - task: Npm@1
       displayName: pack
       inputs:  
