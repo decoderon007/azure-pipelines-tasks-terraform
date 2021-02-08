@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "This contains the Azure Pipelines tasks for installing and executing terraform commands.",
   "scripts": {
-    "postinstall": "cd ./tasks/terraform-installer && npm i && cd ../terraform-cli && npm i && cd ../../",
     "clean": "rimraf ./dist",
     "compile": "npm run clean && webpack --mode production",
     "compile:dev": "npm run clean && webpack --mode development",

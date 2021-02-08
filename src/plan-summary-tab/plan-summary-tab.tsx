@@ -89,16 +89,16 @@ class TerraformPlanDisplay extends React.Component {
         let plan: string | undefined
         let summary: PlanSummary | undefined
 
-        if (!process.env.TEST) {
-            SDK.init()
-            const build = await this.getThisBuild()
-            plan = await this.getPlainPlanAttachment(build)
-            summary = await this.getJsonSummaryAttachment(build)
-        } else {
+        if (process.env.TEST) {
             const testData = require('./test-data');
             // Inject test values here
             plan = testData.examplePlan1 as string;
             summary = JSON.parse(testData.exampleSummary) as PlanSummary;
+        } else {
+            SDK.init()
+            const build = await this.getThisBuild()
+            plan = await this.getPlainPlanAttachment(build)
+            summary = await this.getJsonSummaryAttachment(build)
         }
 
         const ansi_up = new AnsiUp()

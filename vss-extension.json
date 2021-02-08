@@ -86,16 +86,13 @@
         },
         {
             "description": "A tab to show terraform plan output",
-            "id": "terraform-plan-tab",
+            "id": "azure-pipelines-tasks-terraform-plan",
             "type": "ms.vss-build-web.build-results-tab",
             "targets": [
                  "ms.vss-build-web.build-results-view"
             ],
             "properties": {
                 "name": "Terraform Plan",
-                "supportsTasks": [
-                    "58d5194a-3b96-11eb-adc1-0242ac120002"
-                ],
                 "uri": "dist/plan-summary-tab/plan-summary-tab.html"
             }
         }
