@@ -35,6 +35,8 @@ export default class MockTaskContext implements ITaskContext {
     planOrStateFilePath: string = "";
     runAzLogin?: boolean = false;
     publishPlanResults?: boolean = false;
+    systemStageName?: string = "test";
+    systemJobName?: string = "deploy";
     public readonly startedAt: [number, number];
     private _finishedAt: [number, number] | undefined;
     runTime: number = 0;

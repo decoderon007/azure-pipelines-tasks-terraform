@@ -8,6 +8,7 @@ export default class AzdoTaskContext implements ITaskContext {
     private getEndpointDataParameter: (id: string, key: string, optional: boolean) => string;
     private getEndpointAuthorizationParameter: (id: string, key: string, optional: boolean) => string;
     private getSecureFileName: (id: string) => string;
+    public getVariable: (name: string) => string | undefined;
     public setVariable: (name: string, val: string, secret?: boolean | undefined) => void;
     public startedAt: [number, number];
     public finishedAt: [number, number] | undefined;
@@ -18,6 +19,7 @@ export default class AzdoTaskContext implements ITaskContext {
         this.getEndpointAuthorizationScheme = <(id: string, optional: boolean) => string>tasks.getEndpointAuthorizationScheme;
         this.getEndpointDataParameter = <(id: string, key: string, optional: boolean) => string>tasks.getEndpointDataParameter;
         this.getEndpointAuthorizationParameter = <(id: string, key: string, optional: boolean) => string>tasks.getEndpointAuthorizationParameter;
+        this.getVariable = tasks.getVariable;
         this.setVariable = tasks.setVariable;
         this.getSecureFileName = <(id: string) => string>tasks.getSecureFileName;
         this.startedAt = process.hrtime();
@@ -120,6 +122,12 @@ export default class AzdoTaskContext implements ITaskContext {
     }
     get publishPlanResults() {
         return this.getBoolInput("publishPlanResults");
+    }
+    get systemJobName() {
+        return this.getVariable("System.JobName");
+    }
+    get systemStageName() {
+        return this.getVariable("System.StageName");
     }
     finished() {
         this.finishedAt = process.hrtime(this.startedAt);

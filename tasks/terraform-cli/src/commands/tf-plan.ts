@@ -6,6 +6,8 @@ import { IRunner, RunnerResult } from "../runners";
 import { RunWithTerraform } from "../runners/builders";
 import { ITaskAgent } from "../task-agent";
 
+export const publishedPlanAttachmentType = "terraform-plan-results";
+
 export class TerraformPlan implements ICommand {
     constructor(
         private readonly taskAgent: ITaskAgent,
@@ -64,6 +66,7 @@ export class TerraformPlan implements ICommand {
     }
 
     private publishPlanResults(ctx: ITaskContext, result: RunnerResult): void{
-        this.taskAgent.attachNewFile(ctx.cwd, "tfplan.txt", result.stdout);
+        const name = `${ctx.systemStageName}_${ctx.systemJobName}.tfplan`
+        this.taskAgent.attachNewFile(ctx.cwd, publishedPlanAttachmentType, name, result.stdout);
     }
 }
