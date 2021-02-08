@@ -144,6 +144,11 @@ export class TerraformSteps {
         expect(this.test.taskAgent.attachedFiles[this.detailAttachmentName]).to.be.undefined;
     }
 
+    @then("{int} plans are attached")
+    public numberOfPlansAreAttached(count: number){
+        expect(Object.keys(this.test.taskAgent.attachedFiles).length).to.eq(count);
+    }
+
     private expectAttachmentContent(name: string){
         const attachment = this.test.taskAgent.attachedFiles[name];
         expect(attachment).not.does.be.undefined;
