@@ -20,3 +20,17 @@ Feature: publish plan results
         When the terraform cli task is run
         Then the terraform cli task is successful
         And the plan details are not attached
+
+    Scenario: multiple plans
+        Given terraform exists
+        And terraform command is "plan"
+        And running command "terraform plan" returns successful result with stdout from file "./src/tests/features/publish-plan-results/plan-stdout-with-color.txt"
+        And publish plan result is enabled
+        When the terraform cli task is run
+        Then the terraform cli task is successful        
+        And the plan details are attached with the following content from file "./src/tests/features/publish-plan-results/plan-stdout-with-color.txt"
+        When the terraform cli task is run        
+        Then the terraform cli task is successful
+        And 2 plans are attached
+        
+        
