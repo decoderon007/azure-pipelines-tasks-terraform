@@ -56,17 +56,13 @@
             ]
         },
         {
-          "name": "debug - terraform-display",
-          "type": "chrome",
-          "request": "launch",
-          "url": "https://localhost:3000/",
-          "reAttach": true,
-          "pathMappings": [
-            {
-              "url": "webpack:///",
-              "path": "${workspaceFolder}/"
+            "name": "debug:test - summary tab - Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "url": "file:///${workspaceFolder}/dist/plan-summary-tab/plan-summary-tab.html",
+            "pathMapping": {
+                "webpack:///": "${workspaceFolder}/"
             }
-          ]
         }
     ],
     "inputs": [
