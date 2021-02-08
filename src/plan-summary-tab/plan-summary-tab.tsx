@@ -8,19 +8,12 @@ import { Build, BuildRestClient, BuildServiceIds, IBuildPageDataService, Timelin
 import * as SDK from "azure-devops-extension-sdk";
 
 import { Card } from "azure-devops-ui/Card";
-import { ObservableArray, ObservableValue } from "azure-devops-ui/Core/Observable";
+import { Dropdown } from "azure-devops-ui/Dropdown";
+import { ListSelection } from 'azure-devops-ui/List';
 import { Observer } from "azure-devops-ui/Observer";
-import { renderSimpleCell, Table, TableColumnLayout } from "azure-devops-ui/Table";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "./plan-summary-tab.scss";
-import {
-    ITableItem,
-    renderAdd,
-    renderChange,
-    renderDestroy,
-    renderNoChange
-} from "./table-data";
 
 interface ThisBuild {
     project: API.IProjectInfo,
@@ -29,222 +22,181 @@ interface ThisBuild {
     timeline: Timeline,
 }
 
-interface TypeSummary {
-    toCreate: number
-    toDelete: number
-    toUpdate: number
-    unchanged: number
+interface TerraformPlan {
+    name: string,
+    plan: string,
 }
 
-interface PlanSummary {
-    resources: TypeSummary
-    outputs: TypeSummary
+const terraformCliTaskId = '721c3f90-d938-11e8-9d92-09d7594721b5';
+const terraformPlanAttachmentType = 'terraform-plan-results';
+
+const buildClient = getClient(BuildRestClient);
+
+const getBuild = async (project: string, buildId: number): Promise<Build> => {
+    return await buildClient.getBuild(project, buildId)
 }
 
-class TerraformPlanDisplay extends React.Component {
+const getBuildTimeline = async (project: string, buildId: number): Promise<Timeline> => {
+    return await buildClient.getBuildTimeline(project, buildId)
+}
 
-    private readonly buildClient: BuildRestClient
-    private readonly taskId: string = "721c3f90-d938-11e8-9d92-09d7594721b5"
+const getThisBuild = async ():Promise<ThisBuild> => {
+    const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService)
+    const buildService = await SDK.getService<IBuildPageDataService>(BuildServiceIds.BuildPageDataService)
+    const projectFromContext = await projectService.getProject()
+    const buildFromContext = await buildService.getBuildPageData() //requires await to work eventhough does not return Promise
 
-    private planC = new ObservableValue({ __html: "Not ready yet." })
-    private tableItemProvider = new ObservableArray<ITableItem | ObservableValue<ITableItem | undefined>>(
-        new Array(4).fill(new ObservableValue<ITableItem | undefined>(undefined)))
-
-    private readonly fixedColumns = [
-        {
-            columnLayout: TableColumnLayout.singleLine,
-            id: "action",
-            name: "Action",
-            readonly: true,
-            renderCell: renderSimpleCell,
-            width: new ObservableValue(-30),
-        },
-        {
-            columnLayout: TableColumnLayout.singleLine,
-            id: "resources",
-            name: "Resources",
-            readonly: true,
-            renderCell: renderSimpleCell,
-            width: new ObservableValue(-30),
-        },
-
-        {
-            columnLayout: TableColumnLayout.singleLine,
-            id: "outputs",
-            name: "Outputs",
-            readonly: true,
-            renderCell: renderSimpleCell,
-            width: new ObservableValue(-30),
-        },
-    ]
-
-    constructor(props: {} | Readonly<{}>) {
-        super(props)
-        this.buildClient = getClient(BuildRestClient)
+    if (!projectFromContext || !buildFromContext) {
+        throw new Error('Not running in AzureDevops context.')
+    } else {
+        console.log(`Running for project ${projectFromContext.id} and build ${buildFromContext.build?.id.toString()}`)
     }
 
-    public async componentDidMount() {
-
-        let plan: string | undefined
-        let summary: PlanSummary | undefined
-
-        if (process.env.TEST) {
-            const testData = require('./test-data');
-            // Inject test values here
-            plan = testData.examplePlan1 as string;
-            summary = JSON.parse(testData.exampleSummary) as PlanSummary;
-        } else {
-            SDK.init()
-            const build = await this.getThisBuild()
-            plan = await this.getPlainPlanAttachment(build)
-            summary = await this.getJsonSummaryAttachment(build)
-        }
-
-        const ansi_up = new AnsiUp()
-        plan = "<pre>" + ansi_up.ansi_to_html(plan) + "</pre>"
-
-        this.planC.value = { __html: plan }
-        //this.tableItemProvider.value
-
-        this.tableItemProvider.change(0,
-            {
-                action: { iconProps: { render: renderDestroy }, text: "To destroy" },
-                resources: summary.resources.toDelete,
-                outputs: summary.outputs.toDelete
-            },
-            {
-                action: { iconProps: { render: renderChange }, text: "To update" },
-                resources: summary.resources.toUpdate,
-                outputs: summary.outputs.toUpdate
-            },
-            {
-                action: { iconProps: { render: renderAdd }, text: "To create" },
-                resources: summary.resources.toCreate,
-                outputs: summary.outputs.toCreate
-            },
-            {
-                action: { iconProps: { render: renderNoChange }, text: "Unchanged" },
-                resources: summary.resources.unchanged,
-                outputs: summary.outputs.unchanged
-            },
-        )
+    if (!buildFromContext.build?.id) {
+        console.log("Cannot get build id.")
+        throw new Error('Cannot get build from page data')
     }
 
-    public render(): JSX.Element {
-        return (
-            <div className="flex-grow">
-                <Card className="flex-grow bolt-table-card"
-                    titleProps={{ text: "Terraform plan summary" }}
-                    contentProps={{ contentPadding: false }}>
+    const buildId = buildFromContext.build.id
+    const build = await getBuild(projectFromContext.name, buildId)
+    const timeline = await getBuildTimeline(projectFromContext.name, buildId)
 
-                    <Table
-                        ariaLabel="Basic Table"
-                        columns={this.fixedColumns}
-                        itemProvider={this.tableItemProvider}
-                        role="table"
-                        className="tf-plan-summary"
-                        containerClassName="h-scroll-auto"
-                    />
-                </Card>
-
-                <Card className="flex-grow"
-                    titleProps={{ text: "Terraform plan output" }}>
-                    <div className="flex-grow flex-column">
-                        <Observer dangerouslySetInnerHTML={this.planC}>
-                            <div />
-                        </Observer>
-                    </div>
-                </Card>
-            </div>
-        )
+    return {
+        project: projectFromContext,
+        buildId: buildId,
+        build: build,
+        timeline: timeline
     }
+}
 
-    private async getThisBuild(): Promise<ThisBuild> {
-        const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService)
-        const buildService = await SDK.getService<IBuildPageDataService>(BuildServiceIds.BuildPageDataService)
-        const projectFromContext = await projectService.getProject()
-        const buildFromContext = await buildService.getBuildPageData() //requires await to work eventhough does not return Promise
-
-        if (!projectFromContext || !buildFromContext) {
-            throw new Error('Not running in AzureDevops context.')
-        } else {
-            console.log(`Running for project ${projectFromContext.id} and build ${buildFromContext.build?.id.toString()}`)
-        }
-
-        if (!buildFromContext.build?.id) {
-            console.log("Cannot get build id.")
-            throw new Error('Cannot get build from page data')
-        }
-
-        const buildId = buildFromContext.build.id
-        const build = await this.getBuild(projectFromContext.name, buildId)
-        const timeline = await this.getBuildTimeline(projectFromContext.name, buildId)
-
-        return {
-            project: projectFromContext,
-            buildId: buildId,
-            build: build,
-            timeline: timeline
+const getRecordId = (timeline: Timeline): string => {
+    for (let record of timeline.records) {
+        if (record && record.task && record.task.id == terraformCliTaskId) {
+            return record.id
         }
     }
+    throw new Error(`Could not find record id.`)
+}
 
-    getRecordId(timeline: Timeline): string {
-        for (let record of timeline.records) {
-            if (record && record.task && record.task.id == this.taskId) {
-                return record.id
+
+const getPlanAttachmentNames = async (build: ThisBuild): Promise<string[]> => {
+    const attachments = await buildClient.getAttachments(
+        build.project.id,
+        build.buildId,
+        terraformPlanAttachmentType
+    )
+    const attachmentNames = attachments.map(e => e.name)
+    return attachmentNames
+}
+
+const getAttachment = async (build: ThisBuild, attachmentType: string, attachmentName: string): Promise<string> => {
+    const recordId = getRecordId(build.timeline)
+    const attachment = await buildClient.getAttachment(
+        build.project.id,
+        build.buildId,
+        build.timeline.id,
+        recordId,
+        attachmentType,
+        attachmentName)
+    const td = new TextDecoder()
+    return td.decode(attachment)
+}
+
+const getPlainPlanAttachment = async (build: ThisBuild, attachmentName: string): Promise<string> => {
+    const attachmentType: string = terraformPlanAttachmentType
+
+    let attachment: string | undefined
+    try {
+        attachment = await getAttachment(build, attachmentType, attachmentName)
+    } catch (e) {
+        throw new Error(`Failed to download plain plan: ${e}`)
+    }
+
+    return attachment;
+}
+
+const TerraformPlanDisplay: React.FC = props => {
+    const [chosenPlanIndex, setChosenPlanIndex] = React.useState(-1)
+    const [plans, setPlans] = React.useState<TerraformPlan[]>([])
+    //const selection = new ListSelection();
+
+    React.useEffect(() => {
+
+        const fetchPlans = async () => {
+            let foundPlans : TerraformPlan[] = [];
+
+            if (process.env.TEST) {
+                const testData = require('./test-data')
+                // Inject test values here
+                const plan = testData.examplePlan1 as string
+                foundPlans.push({
+                    name: 'test_deploy.tfplan',
+                    plan
+                });
+                foundPlans.push({
+                    name: 'stage_deploy.tfplan',
+                    plan
+                });
+            } else {
+                SDK.init()
+                const build = await getThisBuild()
+                const attachmentNames = await getPlanAttachmentNames(build);
+                for (const name of attachmentNames) {
+                    const plan = await getPlainPlanAttachment(build, name);
+                    foundPlans.push({
+                        name,
+                        plan
+                    });
+                }
             }
-        }
-        throw new Error(`Could not find record id.`)
-    }
 
-    async getBuild(project: string, buildId: number): Promise<Build> {
-        return await this.buildClient.getBuild(project, buildId)
-    }
-
-    async getBuildTimeline(project: string, buildId: number): Promise<Timeline> {
-        return await this.buildClient.getBuildTimeline(project, buildId)
-    }
-
-    async getAttachment(build: ThisBuild, attachmentType: string, attachmentName: string): Promise<string> {
-        const recordId = this.getRecordId(build.timeline)
-        const attachment = await this.buildClient.getAttachment(
-            build.project.id,
-            build.buildId,
-            build.timeline.id,
-            recordId,
-            attachmentType,
-            attachmentName)
-        const td = new TextDecoder()
-        return td.decode(attachment)
-    }
-
-    async getJsonSummaryAttachment(build: ThisBuild): Promise<PlanSummary> {
-        const attachmentType: string = "summary.json"
-        const attachmentName: string = "summary.json"
-
-        const attachment = await this.getAttachment(build, attachmentType, attachmentName)
-
-        const jsonResult: PlanSummary = JSON.parse(attachment.replace(/(\r\n|\r|\n)/gm, ""))
-        if (!jsonResult) {
-            throw new Error(`Cannot parse json attachment to <PlanSummary>: got ${jsonResult}`)
+            setPlans(foundPlans);
+            setChosenPlanIndex(foundPlans.length - 1);
+            //selection.select(chosenPlanIndex);
         }
 
-        return jsonResult
+        fetchPlans();
+    }, []);
+
+    const ansi_up = new AnsiUp()
+    let planHTML = {
+        __html: "Not ready yet."
     }
 
-    async getPlainPlanAttachment(build: ThisBuild): Promise<string> {
-        const attachmentType: string = "plan.text"
-        const attachmentName: string = "tfplan.txt"
-
-        let attachment: string | undefined
-        try {
-            attachment = await this.getAttachment(build, attachmentType, attachmentName)
-        } catch (e) {
-            throw new Error(`Failed to download plain plan: ${e}`)
-        }
-
-        return attachment;
+    if (chosenPlanIndex === -1) {
+        planHTML.__html = "<pre>" + ansi_up.ansi_to_html("No Terraform Plan Found") + "</pre>";
+    } else if (chosenPlanIndex <= plans.length) {
+        const plan = plans[chosenPlanIndex];
+        planHTML.__html = "<pre>" + ansi_up.ansi_to_html(plan.plan) + "</pre>";
     }
+
+    const planNames = plans.map(e => e.name);
+
+    return (
+        <React.Fragment>
+            <Card className="flex-grow"
+                titleProps={{ text: "Terraform plan output" }}>
+                <div className="flex-column">
+                <label htmlFor="work-item-type-picker">New work item type:</label>
+                    {/* <Dropdown<string>
+                        className="sample-work-item-type-picker"
+                        items={planNames}
+                        onSelect={(event, item) => {
+                            // selectedPlan.select(chosenPlanIndex);
+                            // setSelectedPlan(selectedPlan);
+                            console.log(item);
+                        }}
+                        selection={selection}
+                    /> */}
+                </div>
+                <div className="flex-grow flex-column">
+                    <Observer dangerouslySetInnerHTML={planHTML}>
+                        <div />
+                    </Observer>
+                </div>
+            </Card>
+        </React.Fragment>
+    )
 }
 
 ReactDOM.render(<TerraformPlanDisplay />, document.getElementById("root"))
