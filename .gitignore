@@ -124,3 +124,6 @@ dist
 dist/
 
 azure-pipelines-tasks-terraform.code-workspace
+
+tfplan
+*.tfplan
