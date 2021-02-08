@@ -8,12 +8,12 @@ import { MockTaskContext } from '../../context';
 import { CommandStatus } from '../../commands';
 import { _startsWith } from 'azure-pipelines-task-lib/internal';
 import fs from 'fs';
+import { publishedPlanAttachmentType } from '../../commands/tf-plan';
 
 
 @binding([TaskRunner, MockTaskContext, TaskAnswers])
 export class TerraformSteps {
     
-    private readonly detailAttachmentName: string = "tfplan.txt";
     constructor(
         private test: TaskRunner, 
         private ctx: MockTaskContext,
@@ -131,20 +131,20 @@ export class TerraformSteps {
         }
     }
 
-    @then("the plan details are attached with the following content from file {string}")
-    public planDetailsAreAttachedWithTheFollowingContentFromFile(filePath: string){
-        const actualPlan = this.expectAttachmentContent(this.detailAttachmentName);
+    @then("a plan named {string} is published with the following content from file {string}")
+    public planDetailsAreAttachedWithTheFollowingContentFromFile(name: string,  filePath: string){
+        const actualPlan = this.expectAttachmentContent(name);
         const expectedPlan = fs.readFileSync(filePath, 'utf-8');
         
         expect(actualPlan).to.eq(expectedPlan);
     }
 
-    @then("the plan details are not attached")
+    @then("no plans are published")
     public planDetailsAreNotAttached(){
-        expect(this.test.taskAgent.attachedFiles[this.detailAttachmentName]).to.be.undefined;
+        expect(this.test.taskAgent.attachedTypes[publishedPlanAttachmentType]).to.be.undefined;
     }
 
-    @then("{int} plans are attached")
+    @then("{int} plans are published")
     public numberOfPlansAreAttached(count: number){
         expect(Object.keys(this.test.taskAgent.attachedFiles).length).to.eq(count);
     }

@@ -3,11 +3,13 @@ import { ITaskAgent } from ".";
 
 export default class TaskAgentMock implements ITaskAgent {
     public readonly attachedFiles: { [name: string]: { type: string, path: string } } = {};
+    public readonly attachedTypes: { [type: string]: { [ name: string ]: string } } = {}
     public readonly writtenFiles: { [path: string]: string } = {};
 
-    attachNewFile(workingDirectory: string, name: string, content: string): void {
+    attachNewFile(workingDirectory: string, type: string, name: string, content: string): void {
         const filePath = this.writeFile(workingDirectory, name, content);
-        this.attachedFiles[name] = { type: name, path: filePath };
+        this.attachedFiles[name] = { type: type, path: filePath };
+        this.attachedTypes[type] = { [name]: filePath};
     }
 
     writeFile(workingDirectory: string, fileName: string, content: string): string {

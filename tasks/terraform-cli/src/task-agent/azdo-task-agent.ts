@@ -44,9 +44,9 @@ export default class TaskAgent implements ITaskAgent {
         return filePath;
     }
 
-    attachNewFile(workingDirectory: string, name: string, content: string){
+    attachNewFile(workingDirectory: string, type: string, name: string, content: string){
         const filePath = this.writeFile(workingDirectory, name, content);
-        tasks.addAttachment(name, name, filePath);
+        tasks.addAttachment(type, name, filePath);
     }
 
     writeFile(workingDirectory: string, fileName: string, content: string): string {
