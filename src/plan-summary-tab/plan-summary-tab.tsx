@@ -44,8 +44,7 @@ interface PlanSummary {
 class TerraformPlanDisplay extends React.Component {
 
     private readonly buildClient: BuildRestClient
-    // private readonly timelineId: string = "6c731c3c-3c68-459a-a5c9-bde6e6595b5b" // this is the id of the task from task.json
-    private readonly taskId: string = "320ec1e4-3b96-11eb-adc1-0242ac120002"
+    private readonly taskId: string = "721c3f90-d938-11e8-9d92-09d7594721b5"
 
     private planC = new ObservableValue({ __html: "Not ready yet." })
     private tableItemProvider = new ObservableArray<ITableItem | ObservableValue<ITableItem | undefined>>(
