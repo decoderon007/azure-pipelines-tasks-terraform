@@ -4,8 +4,6 @@ stages:
   variables: 
     - group: env_test
   jobs:
-    # Install extension itself
-    - template: install_terraform_extension.yml
     # Install the installer task
     - template: install_terraform_task.yml
       parameters:
