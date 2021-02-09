@@ -1,6 +1,7 @@
-# Plan Summary Tab UI
+# Terraform Plan View
 
-The Plan Summary Tab user interface is a simple React web page.
+The Terraform Plan View allows a quick view of plans that were published during the pipeline run. 
+The view is a simple React web page.
 It is compiled with Webpack and is shown to the user inside of an Azure DevOps Build Pipeline if the Terraform extension is used.
 
 The summary tab reads two attachments from the pipeline:
@@ -27,3 +28,19 @@ A Chrome browser with the plan summary tab will open.
 The displayed content is the content which will be inside of the Azure DevOps Build Pipeline Tab.
 
 For local testing purposes, a set mocked dummy terraform data is loaded.
+
+## Test
+
+To execute the unit tests, run the following npm command
+
+```shell
+npm run test
+```
+
+Alternatively, jest can be run directly using npx
+
+```shell
+npx jest
+```
+
+Running either command will also output coverage results to `./.tests/coverage`.
