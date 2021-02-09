@@ -95,8 +95,7 @@
             "defaultValue": "false",
             "required": false,
             "visibleRule": "command = plan || command = apply || command = destroy || command = refresh || command = import",
-            "helpMarkDown": "If checked, task will execute az login to enable local-exec provisioner to run az cli commands",
-            "groupName": "backendAzureRm"
+            "helpMarkDown": "If checked, task will execute az login to enable local-exec provisioner to run az cli commands"
         },
         {
             "name": "secureVarsFile",
