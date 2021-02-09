@@ -9,7 +9,7 @@ export class AzStorageAccountCreate implements ICommand {
     }
 
     async exec(ctx: ITaskContext): Promise<CommandResponse>{
-        const showOptions = await new RunWithAzCli("show", ["storage", "account"]).build();
+        const showOptions = await new RunWithAzCli("show", ["storage", "account"], undefined, true).build();
         showOptions.addArgs(
             "--name", ctx.backendAzureRmStorageAccountName,
             "--resource-group", ctx.backendAzureRmResourceGroupName
