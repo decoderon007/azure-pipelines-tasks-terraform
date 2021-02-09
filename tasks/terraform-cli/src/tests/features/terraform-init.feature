@@ -116,6 +116,9 @@ Feature: terraform init
             | --kind StorageV2                    |
             | --encryption-services blob          |
             | --access-tier hot                   |
+            | --allow-blob-public-access false    |
+            | --https-only true                   |
+            | --min-tls-version TLS1_2            |
         And running command "az storage container create --auth-mode login --name container --account-name storage" returns successful result
         When the terraform cli task is run
         Then an azure storage account is created with the following options
@@ -126,6 +129,9 @@ Feature: terraform init
             | --kind StorageV2                    |
             | --encryption-services blob          |
             | --access-tier hot                   |
+            | --allow-blob-public-access false    |
+            | --https-only true                   |
+            | --min-tls-version TLS1_2            |
         And an azure storage container is created with the following options
             | option                 |
             | --auth-mode login      |
@@ -190,6 +196,9 @@ Feature: terraform init
             | --kind StorageV2                    |
             | --encryption-services blob          |
             | --access-tier hot                   |
+            | --allow-blob-public-access false    |
+            | --https-only true                   |
+            | --min-tls-version TLS1_2            |
         And running command "az storage container create --auth-mode login --name container --account-name storage" returns successful result
         When the terraform cli task is run
         Then an azure storage account is not created

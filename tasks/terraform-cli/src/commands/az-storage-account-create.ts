@@ -37,6 +37,9 @@ export class AzStorageAccountCreate implements ICommand {
             "--kind", "StorageV2",
             "--encryption-services", "blob",            
             "--access-tier", "hot",
+            "--allow-blob-public-access", "false",
+            "--https-only", "true",
+            "--min-tls-version", "TLS1_2",
         );
         const result = await this.runner.exec(createOptions);
         return result.toCommandResponse();        
