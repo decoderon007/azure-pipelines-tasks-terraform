@@ -43,4 +43,10 @@ Alternatively, jest can be run directly using npx
 npx jest
 ```
 
-Running either command will also output coverage results to `./.tests/coverage`.
+Tests can also be run via `tests - views/terraform-plan` VS Code Task.
+
+Running tests will also output coverage results to `./.tests/coverage`.
+
+### Debug Tests
+
+Launching the VS Code `debug:tests - views/terraform-plan` launch configuration will run tests with VS Code debugging attached.
