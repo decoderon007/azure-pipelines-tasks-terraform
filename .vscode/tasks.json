@@ -125,6 +125,12 @@
 				"install - extension"
 			],
 			"dependsOrder": "parallel"
+		},
+		{
+			"type": "npm",
+			"script": "test",
+			"path": ".",
+			"label": "test - views/terraform-plan"
 		}
 	],
 	"inputs": [
