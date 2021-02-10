@@ -86,49 +86,45 @@ class TerraformPlanDisplay extends React.Component {
             <div>
                 <Card className="flex-grow flex-column"
                     titleProps={{ text: "Terraform plan output" }}>
-                    <div className="flex-column">
-                        <div className="flex-row">
-                            <Observer plans={this.plans}>
-                                {(props: { plans: TerraformPlan[] }) => {
-                                    const planItems = props.plans.map((e: TerraformPlan, index: number) => {
-                                        return {
-                                            id: index.toString(),
-                                            text: e.name
-                                        }
-                                    })
-                                    return (
-                                        <Dropdown
-                                            ariaLabel="Basic"
-                                            className="example-dropdown"
-                                            placeholder="Select an Option"
-                                            items={planItems}
-                                            selection={this.planSelection}
-                                            onSelect={this.onSelect}
-                                        />
-                                    )
-                                }}
-                            </Observer>
-                        </div>
 
+                    <Observer chosenPlan={this.chosenPlan} plans={this.plans} >
+                        {(props: { chosenPlan: number, plans: TerraformPlan[] }) => {
+                            const planItems = props.plans.map((e: TerraformPlan, index: number) => {
+                                return {
+                                    id: index.toString(),
+                                    text: e.name
+                                }
+                            });
 
-                        <div className="flex-row">
-                            <Observer chosenPlan={this.chosenPlan} plans={this.plans} >
-                                {(props: { chosenPlan: number, plans: TerraformPlan[] }) => {
-                                    let html = "";
-                                    if (props.chosenPlan > -1) {
-                                        const ansi_up = new AnsiUp()
-                                        const planText = props.plans[props.chosenPlan].plan;
-                                        html = `<pre>${ansi_up.ansi_to_html(planText)}</pre>`
-                                    }
+                            let html = "No Terraform plan detected.";
+                            if (props.chosenPlan > -1) {
+                                const ansi_up = new AnsiUp()
+                                const planText = props.plans[props.chosenPlan].plan;
+                                html = `<pre>${ansi_up.ansi_to_html(planText)}</pre>`
+                            }
 
-                                    return (
+                            let dropDown = props.plans.length > 1 ? (
+                                <div className="flex-row">
+                                    <Dropdown
+                                        ariaLabel="Basic"
+                                        className="example-dropdown"
+                                        placeholder="Select an Option"
+                                        items={planItems}
+                                        selection={this.planSelection}
+                                        onSelect={this.onSelect}
+                                    />
+                                </div>) : null
+
+                            return (
+                                <div className="flex-column">
+                                    {dropDown}
+                                    <div className="flex-row">
                                         <div dangerouslySetInnerHTML={{ __html: html }} />
-                                    )
-                                }}
-                            </Observer>
-                        </div>
-                    </div>
-
+                                    </div>
+                                </div>
+                            )
+                        }}
+                    </Observer>
                 </Card>
             </div>
         )
