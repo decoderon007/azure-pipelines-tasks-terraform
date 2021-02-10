@@ -100,61 +100,71 @@ class TerraformPlanDisplay extends React.Component {
             summary = await this.getJsonSummaryAttachment(build)
         }
 
-        const ansi_up = new AnsiUp()
-        plan = "<pre>" + ansi_up.ansi_to_html(plan) + "</pre>"
+        if(plan){
+            const ansi_up = new AnsiUp()
+            plan = "<pre>" + ansi_up.ansi_to_html(plan) + "</pre>"
 
-        this.planC.value = { __html: plan }
-        //this.tableItemProvider.value
-
-        this.tableItemProvider.change(0,
-            {
-                action: { iconProps: { render: renderDestroy }, text: "To destroy" },
-                resources: summary.resources.toDelete,
-                outputs: summary.outputs.toDelete
-            },
-            {
-                action: { iconProps: { render: renderChange }, text: "To update" },
-                resources: summary.resources.toUpdate,
-                outputs: summary.outputs.toUpdate
-            },
-            {
-                action: { iconProps: { render: renderAdd }, text: "To create" },
-                resources: summary.resources.toCreate,
-                outputs: summary.outputs.toCreate
-            },
-            {
-                action: { iconProps: { render: renderNoChange }, text: "Unchanged" },
-                resources: summary.resources.unchanged,
-                outputs: summary.outputs.unchanged
-            },
-        )
+            this.planC.value = { __html: plan }
+            //this.tableItemProvider.value
+        }
+        else{
+            this.planC.value = { __html: "No terraform plans have been published for this pipeline run. The terraform cli task must run plan with <code>publishPlanResults: true</code> to view plans."}
+        }
+        
+        if(summary){
+            this.tableItemProvider.change(0,
+                {
+                    action: { iconProps: { render: renderDestroy }, text: "To destroy" },
+                    resources: summary.resources.toDelete,
+                    outputs: summary.outputs.toDelete
+                },
+                {
+                    action: { iconProps: { render: renderChange }, text: "To update" },
+                    resources: summary.resources.toUpdate,
+                    outputs: summary.outputs.toUpdate
+                },
+                {
+                    action: { iconProps: { render: renderAdd }, text: "To create" },
+                    resources: summary.resources.toCreate,
+                    outputs: summary.outputs.toCreate
+                },
+                {
+                    action: { iconProps: { render: renderNoChange }, text: "Unchanged" },
+                    resources: summary.resources.unchanged,
+                    outputs: summary.outputs.unchanged
+                },
+            )
+        }
     }
 
     public render(): JSX.Element {
+        const summaryCard =
+            <Card className="flex-grow bolt-table-card"
+                titleProps={{ text: "Terraform plan summary" }}
+                contentProps={{ contentPadding: false }}>
+
+                <Table
+                    ariaLabel="Basic Table"
+                    columns={this.fixedColumns}
+                    itemProvider={this.tableItemProvider}
+                    role="table"
+                    className="tf-plan-summary"
+                    containerClassName="h-scroll-auto"
+                />
+            </Card>
+        const planCard = 
+            <Card className="flex-grow"
+                titleProps={{ text: "Terraform plan output" }}>
+                <div className="flex-grow flex-column">
+                    <Observer dangerouslySetInnerHTML={this.planC}>
+                        <div />
+                    </Observer>
+                </div>
+            </Card>
         return (
             <div className="flex-grow">
-                <Card className="flex-grow bolt-table-card"
-                    titleProps={{ text: "Terraform plan summary" }}
-                    contentProps={{ contentPadding: false }}>
-
-                    <Table
-                        ariaLabel="Basic Table"
-                        columns={this.fixedColumns}
-                        itemProvider={this.tableItemProvider}
-                        role="table"
-                        className="tf-plan-summary"
-                        containerClassName="h-scroll-auto"
-                    />
-                </Card>
-
-                <Card className="flex-grow"
-                    titleProps={{ text: "Terraform plan output" }}>
-                    <div className="flex-grow flex-column">
-                        <Observer dangerouslySetInnerHTML={this.planC}>
-                            <div />
-                        </Observer>
-                    </div>
-                </Card>
+                {this.tableItemProvider.value[0].value && summaryCard}
+                {planCard}
             </div>
         )
     }
