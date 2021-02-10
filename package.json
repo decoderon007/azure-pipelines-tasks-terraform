@@ -8,10 +8,11 @@
     "compile:dev": "npm run clean && webpack --mode development",
     "compile:test": "npm run clean && webpack --mode development --test",
     "package:tasks": "cd ./tasks/terraform-installer && npm run pack && cd ../terraform-cli && npm run pack && cd ../../",
-    "pack": "cross-var ./node_modules/.bin/tfx extension create --manifests vss-extension.json --output-path .bin --override { \\\"version\\\" : \\\"$npm_package_version\\\" }",
+    "pack": "cross-var ./node_modules/.bin/tfx extension create --manifest-globs vss-extension.json vss-extension-release.json --output-path .bin --override { \\\"version\\\" : \\\"$npm_package_version\\\" }",
+    "pack:test": "cross-var ./node_modules/.bin/tfx extension create --manifest-globs vss-extension.json vss-extension-test.json --output-path .bin --override { \\\"version\\\" : \\\"$npm_package_version\\\" }",
     "publish": "cross-var ./node_modules/.bin/tfx extension publish --vsix .bin/charleszipp.azure-pipelines-tasks-terraform-$npm_package_version.vsix",
-    "install:extension": "cross-var ./node_modules/.bin/tfx extension install --vsix .bin/charleszipp.azure-pipelines-tasks-terraform-$npm_package_version.vsix",
-    "test" : "jest"
+    "test" : "jest",
+    "publish:test": "cross-var ./node_modules/.bin/tfx extension publish --vsix .bin/charleszipp.azure-pipelines-tasks-terraform-test-$npm_package_version.vsix"
   },
   "repository": {
     "type": "git",

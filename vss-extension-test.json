@@ -1,0 +1,7 @@
+{
+    "id": "azure-pipelines-tasks-terraform-test",
+    "galleryFlags": [
+        "Preview"
+    ],
+    "public": false
+}
