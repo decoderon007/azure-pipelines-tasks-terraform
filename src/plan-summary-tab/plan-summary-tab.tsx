@@ -9,18 +9,13 @@ import * as SDK from "azure-devops-extension-sdk";
 
 import { Card } from "azure-devops-ui/Card";
 import { ObservableArray, ObservableValue } from "azure-devops-ui/Core/Observable";
+import { Dropdown } from "azure-devops-ui/Dropdown";
+import { DropdownSelection } from "azure-devops-ui/Utilities/DropdownSelection";
 import { Observer } from "azure-devops-ui/Observer";
-import { renderSimpleCell, Table, TableColumnLayout } from "azure-devops-ui/Table";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "./plan-summary-tab.scss";
-import {
-    ITableItem,
-    renderAdd,
-    renderChange,
-    renderDestroy,
-    renderNoChange
-} from "./table-data";
+import { IListBoxItem } from 'azure-devops-ui/ListBox';
 
 interface ThisBuild {
     project: API.IProjectInfo,
@@ -29,54 +24,20 @@ interface ThisBuild {
     timeline: Timeline,
 }
 
-interface TypeSummary {
-    toCreate: number
-    toDelete: number
-    toUpdate: number
-    unchanged: number
-}
-
-interface PlanSummary {
-    resources: TypeSummary
-    outputs: TypeSummary
+interface TerraformPlan {
+    name: string,
+    plan: string,
 }
 
 class TerraformPlanDisplay extends React.Component {
 
     private readonly buildClient: BuildRestClient
+    private readonly terraformPlanAttachmentType: string = "terraform-plan-results"
     private readonly taskId: string = "721c3f90-d938-11e8-9d92-09d7594721b5"
 
-    private planC = new ObservableValue({ __html: "Not ready yet." })
-    private tableItemProvider = new ObservableArray<ITableItem | ObservableValue<ITableItem | undefined>>(
-        new Array(4).fill(new ObservableValue<ITableItem | undefined>(undefined)))
-
-    private readonly fixedColumns = [
-        {
-            columnLayout: TableColumnLayout.singleLine,
-            id: "action",
-            name: "Action",
-            readonly: true,
-            renderCell: renderSimpleCell,
-            width: new ObservableValue(-30),
-        },
-        {
-            columnLayout: TableColumnLayout.singleLine,
-            id: "resources",
-            name: "Resources",
-            readonly: true,
-            renderCell: renderSimpleCell,
-            width: new ObservableValue(-30),
-        },
-
-        {
-            columnLayout: TableColumnLayout.singleLine,
-            id: "outputs",
-            name: "Outputs",
-            readonly: true,
-            renderCell: renderSimpleCell,
-            width: new ObservableValue(-30),
-        },
-    ]
+    private planSelection = new DropdownSelection();
+    private chosenPlan = new ObservableValue(-1);
+    private plans = new ObservableArray<TerraformPlan>([]);
 
     constructor(props: {} | Readonly<{}>) {
         super(props)
@@ -85,79 +46,97 @@ class TerraformPlanDisplay extends React.Component {
 
     public async componentDidMount() {
 
-        let plan: string | undefined
-        let summary: PlanSummary | undefined
+        let foundPlans: TerraformPlan[] = [];
 
         if (process.env.TEST) {
-            const testData = require('./test-data');
+            const testData = require('./test-data')
             // Inject test values here
-            plan = testData.examplePlan1 as string;
-            summary = JSON.parse(testData.exampleSummary) as PlanSummary;
+            const plan = testData.examplePlan1 as string
+            foundPlans.push({
+                name: 'test_deploy.tfplan',
+                plan
+            });
+            foundPlans.push({
+                name: 'stage_deploy.tfplan',
+                plan
+            });
         } else {
             SDK.init()
             const build = await this.getThisBuild()
-            plan = await this.getPlainPlanAttachment(build)
-            summary = await this.getJsonSummaryAttachment(build)
+            const attachmentNames = await this.getPlanAttachmentNames(build);
+            for (const name of attachmentNames) {
+                const plan = await this.getPlainPlanAttachment(build, name);
+                foundPlans.push({
+                    name,
+                    plan
+                });
+            }
         }
 
-        const ansi_up = new AnsiUp()
-        plan = "<pre>" + ansi_up.ansi_to_html(plan) + "</pre>"
-
-        this.planC.value = { __html: plan }
-        //this.tableItemProvider.value
-
-        this.tableItemProvider.change(0,
-            {
-                action: { iconProps: { render: renderDestroy }, text: "To destroy" },
-                resources: summary.resources.toDelete,
-                outputs: summary.outputs.toDelete
-            },
-            {
-                action: { iconProps: { render: renderChange }, text: "To update" },
-                resources: summary.resources.toUpdate,
-                outputs: summary.outputs.toUpdate
-            },
-            {
-                action: { iconProps: { render: renderAdd }, text: "To create" },
-                resources: summary.resources.toCreate,
-                outputs: summary.outputs.toCreate
-            },
-            {
-                action: { iconProps: { render: renderNoChange }, text: "Unchanged" },
-                resources: summary.resources.unchanged,
-                outputs: summary.outputs.unchanged
-            },
-        )
+        this.plans.change(0, ...foundPlans)
+        const initialSelection = foundPlans.length - 1
+        this.planSelection.select(initialSelection)
+        this.chosenPlan.value = initialSelection
     }
 
     public render(): JSX.Element {
+
+
         return (
-            <div className="flex-grow">
-                <Card className="flex-grow bolt-table-card"
-                    titleProps={{ text: "Terraform plan summary" }}
-                    contentProps={{ contentPadding: false }}>
-
-                    <Table
-                        ariaLabel="Basic Table"
-                        columns={this.fixedColumns}
-                        itemProvider={this.tableItemProvider}
-                        role="table"
-                        className="tf-plan-summary"
-                        containerClassName="h-scroll-auto"
-                    />
-                </Card>
-
-                <Card className="flex-grow"
+            <div>
+                <Card className="flex-grow flex-column"
                     titleProps={{ text: "Terraform plan output" }}>
-                    <div className="flex-grow flex-column">
-                        <Observer dangerouslySetInnerHTML={this.planC}>
-                            <div />
-                        </Observer>
+                    <div className="flex-column">
+                        <div className="flex-row">
+                            <Observer plans={this.plans}>
+                                {(props: { plans: TerraformPlan[] }) => {
+                                    const planItems = props.plans.map((e: TerraformPlan, index: number) => {
+                                        return {
+                                            id: index.toString(),
+                                            text: e.name
+                                        }
+                                    })
+                                    return (
+                                        <Dropdown
+                                            ariaLabel="Basic"
+                                            className="example-dropdown"
+                                            placeholder="Select an Option"
+                                            items={planItems}
+                                            selection={this.planSelection}
+                                            onSelect={this.onSelect}
+                                        />
+                                    )
+                                }}
+                            </Observer>
+                        </div>
+
+
+                        <div className="flex-row">
+                            <Observer chosenPlan={this.chosenPlan} plans={this.plans} >
+                                {(props: { chosenPlan: number, plans: TerraformPlan[] }) => {
+                                    let html = "";
+                                    if (props.chosenPlan > -1) {
+                                        const ansi_up = new AnsiUp()
+                                        const planText = props.plans[props.chosenPlan].plan;
+                                        html = `<pre>${ansi_up.ansi_to_html(planText)}</pre>`
+                                    }
+
+                                    return (
+                                        <div dangerouslySetInnerHTML={{ __html: html }} />
+                                    )
+                                }}
+                            </Observer>
+                        </div>
                     </div>
+
                 </Card>
             </div>
         )
     }
+
+    private onSelect = (event: React.SyntheticEvent<HTMLElement>, item: IListBoxItem<{}>) => {
+        this.chosenPlan.value = parseInt(item.id);
+    };
 
     private async getThisBuild(): Promise<ThisBuild> {
         const projectService = await SDK.getService<IProjectPageService>(CommonServiceIds.ProjectPageService)
@@ -205,6 +184,16 @@ class TerraformPlanDisplay extends React.Component {
         return await this.buildClient.getBuildTimeline(project, buildId)
     }
 
+    async getPlanAttachmentNames(build: ThisBuild): Promise<string[]> {
+        const attachments = await this.buildClient.getAttachments(
+            build.project.id,
+            build.buildId,
+            this.terraformPlanAttachmentType
+        )
+        const attachmentNames = attachments.map(e => e.name)
+        return attachmentNames
+    }
+
     async getAttachment(build: ThisBuild, attachmentType: string, attachmentName: string): Promise<string> {
         const recordId = this.getRecordId(build.timeline)
         const attachment = await this.buildClient.getAttachment(
@@ -218,27 +207,10 @@ class TerraformPlanDisplay extends React.Component {
         return td.decode(attachment)
     }
 
-    async getJsonSummaryAttachment(build: ThisBuild): Promise<PlanSummary> {
-        const attachmentType: string = "summary.json"
-        const attachmentName: string = "summary.json"
-
-        const attachment = await this.getAttachment(build, attachmentType, attachmentName)
-
-        const jsonResult: PlanSummary = JSON.parse(attachment.replace(/(\r\n|\r|\n)/gm, ""))
-        if (!jsonResult) {
-            throw new Error(`Cannot parse json attachment to <PlanSummary>: got ${jsonResult}`)
-        }
-
-        return jsonResult
-    }
-
-    async getPlainPlanAttachment(build: ThisBuild): Promise<string> {
-        const attachmentType: string = "plan.text"
-        const attachmentName: string = "tfplan.txt"
-
+    async getPlainPlanAttachment(build: ThisBuild, attachmentName: string): Promise<string> {
         let attachment: string | undefined
         try {
-            attachment = await this.getAttachment(build, attachmentType, attachmentName)
+            attachment = await this.getAttachment(build, this.terraformPlanAttachmentType, attachmentName)
         } catch (e) {
             throw new Error(`Failed to download plain plan: ${e}`)
         }
