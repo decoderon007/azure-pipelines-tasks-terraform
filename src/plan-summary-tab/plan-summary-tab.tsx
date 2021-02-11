@@ -41,7 +41,9 @@ interface PlanSummary {
     outputs: TypeSummary
 }
 
-class TerraformPlanDisplay extends React.Component {
+export const NoPublishedPlanMessage = "No terraform plans have been published for this pipeline run. The terraform cli task must run plan with <code>publishPlanResults: true</code> to view plans.";
+
+export default class TerraformPlanDisplay extends React.Component {
 
     private readonly buildClient: BuildRestClient
     private readonly taskId: string = "721c3f90-d938-11e8-9d92-09d7594721b5"
@@ -89,10 +91,10 @@ class TerraformPlanDisplay extends React.Component {
         let summary: PlanSummary | undefined
 
         if (process.env.TEST) {
-            const testData = require('./test-data');
+            //const testData = require('./test-data');
             // Inject test values here
-            plan = testData.examplePlan1 as string;
-            summary = JSON.parse(testData.exampleSummary) as PlanSummary;
+            // plan = testData.examplePlan1 as string;
+            // summary = JSON.parse(testData.exampleSummary) as PlanSummary;
         } else {
             SDK.init()
             const build = await this.getThisBuild()
@@ -108,7 +110,7 @@ class TerraformPlanDisplay extends React.Component {
             //this.tableItemProvider.value
         }
         else{
-            this.planC.value = { __html: "No terraform plans have been published for this pipeline run. The terraform cli task must run plan with <code>publishPlanResults: true</code> to view plans."}
+            this.planC.value = { __html: NoPublishedPlanMessage}
         }
         
         if(summary){
