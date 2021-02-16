@@ -1,6 +1,5 @@
 {
     "manifestVersion": 1,
-    "name": "Azure Pipelines Terraform Tasks",
     "version": "0.4.14",
     "publisher": "charleszipp",
     "targets": [{
