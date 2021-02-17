@@ -30,8 +30,10 @@ export interface ITaskContext {
     resourceId: string;
     lockId: string;
     planOrStateFilePath: string;
-    runAzLogin?: boolean
-    publishPlanResults?: boolean
+    runAzLogin?: boolean;
+    publishPlanResults?: boolean;
+    systemStageName?: string;
+    systemJobName?: string;
     setVariable: (name: string, val: string, secret?: boolean | undefined) => void;
     runTime: number;
     finished: () => void;

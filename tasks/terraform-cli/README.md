@@ -51,6 +51,10 @@ AGENT_TEMPDIRECTORY=./../_test-agent/temp
 SYSTEM_TEAMFOUNDATIONCOLLECTIONURI=my-azure-devops-org-url
 # The name of the project within the org provided above
 SYSTEM_TEAMPROJECT=my-azure-devops-org-project
+# A name for the stage under which the task is being executed. This can be any value. It does not have to match an actual stage in Azure Pipelines
+SYSTEM_STAGENAME=test
+# A name for the job under which the task is being executed. This can be any value. It does not have to match an actual job in Azure Pipelines
+SYSTEM_JOBNAME=deploy
 # Personal Access Token for authentication
 ENDPOINT_AUTH_PARAMETER_SYSTEMVSSCONNECTION_ACCESSTOKEN=my-personal-access-token
 
