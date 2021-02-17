@@ -13,7 +13,6 @@ import { Dropdown } from "azure-devops-ui/Dropdown";
 import { DropdownSelection } from "azure-devops-ui/Utilities/DropdownSelection";
 import { Observer } from "azure-devops-ui/Observer";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import "./plan-summary-tab.scss";
 import { IListBoxItem } from 'azure-devops-ui/ListBox';
 
@@ -216,5 +215,3 @@ export default class TerraformPlanDisplay extends React.Component {
         return attachment;
     }
 }
-
-ReactDOM.render(<TerraformPlanDisplay />, document.getElementById("root"))

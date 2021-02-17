@@ -1,20 +1,14 @@
 const path = require("path");
-const fs = require("fs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const webpack = require('webpack');
-
-const entries = {};
-const srcDir = path.join(__dirname, "src");
-fs.readdirSync(srcDir)
-  .filter(dir => fs.statSync(path.join(srcDir, dir)).isDirectory())
-  .forEach(dir => (entries[dir] = "./" + path.join("src", dir, dir)));
 
 module.exports = (env) => {
   return {
     target: "web",
-    entry: entries,
+    context: path.resolve(__dirname, './src'),
+    entry: './index.tsx',
     output: {
-      filename: "[name]/[name].js",
+      filename: "index.js",
       publicPath: "/dist/"
     },
     devtool: "inline-source-map",
@@ -67,7 +61,7 @@ module.exports = (env) => {
       ]
     },
     plugins: [
-      new CopyWebpackPlugin([{ from: "**/*.html", context: "src" }]),
+      new CopyWebpackPlugin([{ from: "**/*.html" }]),
       new webpack.DefinePlugin({
         'process.env.TEST': env.test
       })
