@@ -7,8 +7,8 @@ This contains tasks for installing and executing Terraform commands from Azure P
 
 The two tasks contained within this extension are
 
-- [Terraform Installer](/tasks/terraform-installer/readme.md)
-- [Terraform CLI](/tasks/terraform-cli/readme.md)
+- [Terraform Installer](/tasks/terraform-installer/README.md)
+- [Terraform CLI](/tasks/terraform-cli/README.md)
 
 ### Disabling Telemetry Collection
 

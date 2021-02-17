@@ -1,7 +1,5 @@
 {
     "manifestVersion": 1,
-    "id": "azure-pipelines-tasks-terraform",
-    "name": "Azure Pipelines Terraform Tasks",
     "version": "0.4.14",
     "publisher": "charleszipp",
     "targets": [{
@@ -9,7 +7,7 @@
     }],
     "description": "Tasks to execute terraform commands during Azure Pipelines",
     "categories": [
-        "Build and release"
+        "Azure Pipelines"
     ],
     "icons": {
         "default": "vss-extension-icon.png"
@@ -53,10 +51,7 @@
             "uri": "https://github.com/charleszipp/azure-pipelines-tasks-terraform/blob/master/LICENSE"
         }
     },
-    "galleryFlags": [
-        "Public",
-        "Preview"
-    ],
+    
     "tags" : [
         "terraform", "azurerm", "azure", "infrastructure as code", "iac", "cloud", "deploy"
     ],

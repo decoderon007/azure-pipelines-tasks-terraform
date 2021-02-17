@@ -97,6 +97,12 @@ export class TaskContextSteps {
         this.ctx.publishPlanResults = true;
     }
 
+    @given("pipeline stage {string} and job {string}")
+    public pipelineStageAndJob(stage: string, job: string){
+        this.ctx.systemStageName = stage;
+        this.ctx.systemJobName = job;
+    }
+
     @then("pipeline variable {string} is set to {string}")
     public pipelineVariableIsSet(key: string, value: string){
         const variable = this.ctx.variables[key];
