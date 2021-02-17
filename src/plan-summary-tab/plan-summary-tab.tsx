@@ -98,7 +98,7 @@ export default class TerraformPlanDisplay extends React.Component {
                                 }
                             });
 
-                            let html = "No Terraform plan detected.";
+                            let html = NoPublishedPlanMessage;
                             if (props.chosenPlan > -1) {
                                 const ansi_up = new AnsiUp()
                                 const planText = props.plans[props.chosenPlan].plan;
