@@ -62,7 +62,7 @@ export default class TerraformPlanDisplay extends React.Component {
                 plan
             });
         } else {
-            SDK.init()
+            await SDK.init();
             const build = await this.getThisBuild()
             const attachmentNames = await this.getPlanAttachmentNames(build);
             for (const name of attachmentNames) {
@@ -174,7 +174,7 @@ export default class TerraformPlanDisplay extends React.Component {
     }
 
     async getBuild(project: string, buildId: number): Promise<Build> {
-        return await this.buildClient.getBuild(project, buildId)
+        return 
     }
 
     async getBuildTimeline(project: string, buildId: number): Promise<Timeline> {

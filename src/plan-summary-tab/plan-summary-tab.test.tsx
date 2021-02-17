@@ -10,7 +10,6 @@ beforeEach(() => {
   container = document.createElement("div");
   container.id = "root";
   document.body.appendChild(container);
-  process.env["TEST"] = "true";
 });
 
 afterEach(() => {
