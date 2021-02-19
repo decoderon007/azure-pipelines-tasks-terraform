@@ -2,7 +2,7 @@ import { expect, test, describe, it } from '@jest/globals'
 import React from 'react'
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
-import { MockAttachmentService } from '../services/attachments';
+import MockAttachmentService from '../services/attachments/mock-attachment-service';
 import TerraformPlanDisplay, { NoPublishedPlanMessage } from './plan-summary-tab';
 
 let container: HTMLDivElement | null;
