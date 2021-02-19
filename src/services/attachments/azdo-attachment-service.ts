@@ -1,5 +1,5 @@
+import * as SDK from "azure-devops-extension-sdk";
 import { Attachment, IAttachmentService } from "./index";
-import * as SDK from "azure-devops-extension-sdk"; 
 import { CommonServiceIds, getClient, IProjectInfo, IProjectPageService } from "azure-devops-extension-api";
 import { Build, BuildRestClient, BuildServiceIds, IBuildPageDataService, Timeline } from "azure-devops-extension-api/Build";
 
@@ -10,15 +10,13 @@ interface ThisBuild {
     timeline: Timeline,
 }
 
-export class AzdoAttachmentService implements IAttachmentService {
+export default class AzdoAttachmentService implements IAttachmentService {
     private readonly buildClient: BuildRestClient;
 
     constructor(private readonly taskId: string) {        
         this.buildClient = getClient(BuildRestClient)
-        
     }
-
-
+    
     async getAttachments(type: string): Promise<Attachment[]> {
         const attachments: Attachment[] = [];
         const build = await this.getThisBuild();

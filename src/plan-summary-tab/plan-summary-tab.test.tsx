@@ -2,14 +2,17 @@ import { expect, test, describe, it } from '@jest/globals'
 import React from 'react'
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
+import { MockAttachmentService } from '../services/attachments';
 import TerraformPlanDisplay, { NoPublishedPlanMessage } from './plan-summary-tab';
 
 let container: HTMLDivElement | null;
+let attachments: MockAttachmentService;
 
 beforeEach(() => {
   container = document.createElement("div");
   container.id = "root";
   document.body.appendChild(container);
+  attachments = new MockAttachmentService();
 });
 
 afterEach(() => {
@@ -22,9 +25,15 @@ afterEach(() => {
 
 test("no plans have been published", () => {
   act(() => {
-    render(<TerraformPlanDisplay />, container);  
+    render(<TerraformPlanDisplay attachments={attachments} />, container);  
   });
+  // select the first flex row of the card content section
+  const elements = container?.querySelectorAll("div.bolt-card-content div.flex-column div.flex-row div");
+  expect(elements).toBeDefined();
   
-  expect(true).toBe(true);
+  if(elements){
+    expect(elements.length).toBe(1);
+    expect(elements[0].innerHTML).toBe(NoPublishedPlanMessage);
+  }
 });
 
