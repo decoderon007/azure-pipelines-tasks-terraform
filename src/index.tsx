@@ -10,16 +10,16 @@ const renderComponent = (attachments: IAttachmentService) => {
 
 if(process.env.TEST){
     const mockAttachments = new MockAttachmentService();
-    // const testData = require('./plan-summary-tab/test-data')
-    // mockAttachments.setAttachments(...[{
-    //     name: 'test_deploy.tfplan',
-    //     type: 'terraform-plan-results',
-    //     content: testData.examplePlan1
-    // }, {
-    //     name: 'stage_deploy.tfplan',
-    //     type: 'terraform-plan-results',
-    //     content: testData.examplePlan1
-    // }])
+    const testData = require('./plan-summary-tab/test-data')
+    mockAttachments.setAttachments(...[{
+        name: 'test_deploy.tfplan',
+        type: 'terraform-plan-results',
+        content: testData.examplePlan1
+    }, {
+        name: 'stage_deploy.tfplan',
+        type: 'terraform-plan-results',
+        content: testData.examplePlan1
+    }])
     renderComponent(mockAttachments);
 }
 else{    
