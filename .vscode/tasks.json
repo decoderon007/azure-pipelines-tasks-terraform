@@ -136,11 +136,10 @@
 			"detail": "install dependencies from package"
 		},
 		{
-			"type": "typescript",
-			"tsconfig": "views/terraform-plan/tsconfig.json",
-			"problemMatcher": [
-				"$tsc"
-			],
+			"type": "npm",
+			"script": "build",
+			"path": "views/terraform-plan/",
+			"problemMatcher": [],
 			"group": "build",
 			"label": "build - views/terraform-plan"
 		},
@@ -154,12 +153,32 @@
 			"type": "npm",
 			"script": "start",
 			"path": "views/terraform-plan/",
-			"problemMatcher": [],
 			"label": "start - views/terraform-plan",
 			"detail": "starts webpack dev server",
-			"dependsOn": [
-				"build - views/terraform-plan"
-			]
+			"promptOnClose": true,
+			"isBackground": true,			
+			"problemMatcher": [{
+				"owner": "webpack",
+				"severity": "error",
+				"fileLocation": "absolute",
+				"pattern": [
+				  {
+					"regexp": "ERROR in (.*)",
+					"file": 1
+				  },
+				  {
+					"regexp": "\\((\\d+),(\\d+)\\):(.*)",
+					"line": 1,
+					"column": 2,
+					"message": 3
+				  }
+				],
+				"background": {
+				  "activeOnStart": true,
+				  "beginsPattern": "Compiling\\.\\.\\.",
+				  "endsPattern": "Compiled "
+				}
+			}]
 		},
 		{
 			"type": "npm",

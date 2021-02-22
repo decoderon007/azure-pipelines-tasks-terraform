@@ -10,13 +10,11 @@ module.exports = (env) => {
     output: {
       filename: "index.js",
       path: path.resolve(__dirname, "./.bin"),
-      publicPath: ".bin"
     },
-    devtool: "inline-source-map",
+    devtool: "source-map",
     devServer: {
       port: 3000,
-      publicPath: ".bin",
-      openPage: ".bin/index.html"
+      contentBase: path.resolve(__dirname, "./.bin")
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
