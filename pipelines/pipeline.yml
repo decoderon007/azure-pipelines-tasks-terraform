@@ -24,6 +24,7 @@ variables:
   terraform_extension_dir: $(System.DefaultWorkingDirectory)
   terraform_installer_dir: $(System.DefaultWorkingDirectory)/tasks/terraform-installer
   terraform_cli_dir: $(System.DefaultWorkingDirectory)/tasks/terraform-cli
+  views_terraform_plan_dir: $(System.DefaultWorkingDirectory)/views/terraform-plan
   terraform_templates_dir: $(System.DefaultWorkingDirectory)/templates
 
 name: $(GitVersion.FullSemVer)
