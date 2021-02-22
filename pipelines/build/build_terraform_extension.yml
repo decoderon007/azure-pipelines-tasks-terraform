@@ -17,7 +17,7 @@ jobs:
     - task: DownloadPipelineArtifact@2
       displayName: download views terraform plan
       inputs: 
-        artifact: views terraform_plan
+        artifact: views_terraform_plan
         path: $(terraform_extension_dir)
     - task: Npm@1
       displayName: version
