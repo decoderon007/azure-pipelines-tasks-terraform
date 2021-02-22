@@ -6,7 +6,7 @@
     "clean": "rimraf ./dist",
     "compile": "npm run clean && webpack --mode production",
     "compile:dev": "npm run clean && webpack --mode development",
-    "compile:test": "npm run clean && webpack --mode development --test",
+    "compile:test": "npm run clean && webpack --env test --mode development",
     "package:tasks": "cd ./tasks/terraform-installer && npm run pack && cd ../terraform-cli && npm run pack && cd ../../",
     "pack": "cross-var ./node_modules/.bin/tfx extension create --manifest-globs vss-extension.json vss-extension-release.json --output-path .bin --override { \\\"version\\\" : \\\"$npm_package_version\\\" }",
     "pack:test": "cross-var ./node_modules/.bin/tfx extension create --manifest-globs vss-extension.json vss-extension-test.json --output-path .bin --override { \\\"version\\\" : \\\"$npm_package_version\\\" }",
@@ -63,7 +63,28 @@
     "typescript": "^4.1.3",
     "webpack": "^4.32.1",
     "webpack-cli": "^4.3.0",
-    "webpack-dev-server": "^3.11.2",
-    "yargs": "^16.2.0"
+    "webpack-dev-server": "^3.11.2"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.(js|ts|tsx|jsx)$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(react-native|azure-devops-ui|azure-devops-extension-sdk)/)"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/__mocks__/fileMock.js",
+      "\\.(css|less|scss)$": "<rootDir>/src/__mocks__/styleMock.js"
+    },
+    "collectCoverage": true,
+    "coverageReporters": [ "text", "text-summary", "html", "cobertura"],
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "tsconfig.test.json"
+      }
+    }
   }
 }
