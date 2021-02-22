@@ -4,12 +4,13 @@
   "description": "Azure Pipelines view to render terraform plans",
   "main": ".dist/index.js",
   "scripts": {
-    "clean": "rimraf .dist",
+    "clean": "rimraf .bin",
     "test": "jest",
     "build": "npm run clean && webpack --mode production",
     "build:dev": "npm run clean && webpack --mode development",
     "build:test": "npm run clean && webpack --env test --mode development",
-    "start": "webpack serve --open"
+    "start": "webpack serve --open",
+    "pack": "rimraf .dist && copyfiles -f \".bin/**/*\" .dist"
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,7 @@
     "ansi_up": "^4.0.4",
     "base64-inline-loader": "^1.1.1",
     "copy-webpack-plugin": "^5.0.3",
+    "copyfiles": "^2.4.1",
     "css-loader": "^2.1.1",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.3.0",
