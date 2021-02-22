@@ -5,10 +5,16 @@
 
 This contains tasks for installing and executing Terraform commands from Azure Pipelines. These extensions are intended to work on any build agent. They are also intended to provide a guided abstraction to deploying infrastructure with Terraform from Azure Pipelines.
 
-The two tasks contained within this extension are
+The tasks contained within this extension are:
 
 - [Terraform Installer](/tasks/terraform-installer/README.md)
 - [Terraform CLI](/tasks/terraform-cli/README.md)
+
+This extension also contains views for the pipeline summary to help inspect actions performed by terraform.
+
+The views contained within this extension are:
+
+- [Terraform Plan](/views/terraform-plan/README.md)
 
 ### Disabling Telemetry Collection
 
