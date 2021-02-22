@@ -65,13 +65,13 @@
             ]
         },
         {
-            "name": "debug:test - summary tab - Chrome",
-            "type": "chrome",
+            "name": "debug - views/terraform-plan",
+            "type": "edge",
             "request": "launch",
-            "url": "file:///${workspaceFolder}/dist/index.html",
-            "pathMapping": {
-                "webpack:///": "${workspaceFolder}/"
-            }
+            "port": 9222,
+            "url": "http://localhost:3000/",
+            "webRoot": "${workspaceFolder}/views/terraform-plan/src",
+            "preLaunchTask": "start - views/terraform-plan"
         }
     ],
     "inputs": [

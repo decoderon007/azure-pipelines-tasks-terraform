@@ -1,5 +1,5 @@
 {
-	"version": "2.0.0",
+	"version": "2.0.0",	
 	"tasks": [
 		{
 			"type": "npm",
@@ -122,15 +122,75 @@
 			"dependsOn": [
 				"pack - tasks/terraform-cli",
 				"pack - tasks/terraform-installer",
+				"pack - tasks/terraform-plan",
 				"install - extension"
 			],
 			"dependsOrder": "parallel"
 		},
 		{
 			"type": "npm",
+			"script": "install",
+			"path": "views/terraform-plan/",
+			"problemMatcher": [],
+			"label": "install - views/terraform-plan",
+			"detail": "install dependencies from package"
+		},
+		{
+			"type": "npm",
+			"script": "build",
+			"path": "views/terraform-plan/",
+			"problemMatcher": [],
+			"group": "build",
+			"label": "build - views/terraform-plan"
+		},
+		{
+			"type": "npm",
 			"script": "test",
-			"path": ".",
-			"label": "test - views/terraform-plan"
+			"path": "views/terraform-plan/",
+			"label": "tests - views/terraform-plan"
+		},
+		{
+			"type": "npm",
+			"script": "start",
+			"path": "views/terraform-plan/",
+			"label": "start - views/terraform-plan",
+			"detail": "starts webpack dev server",
+			"promptOnClose": true,
+			"isBackground": true,			
+			"problemMatcher": [{
+				"owner": "webpack",
+				"severity": "error",
+				"fileLocation": "absolute",
+				"pattern": [
+				  {
+					"regexp": "ERROR in (.*)",
+					"file": 1
+				  },
+				  {
+					"regexp": "\\((\\d+),(\\d+)\\):(.*)",
+					"line": 1,
+					"column": 2,
+					"message": 3
+				  }
+				],
+				"background": {
+				  "activeOnStart": true,
+				  "beginsPattern": "Compiling\\.\\.\\.",
+				  "endsPattern": "Compiled "
+				}
+			}]
+		},
+		{
+			"type": "npm",
+			"script": "pack",
+			"path": "views/terraform-plan/",
+			"problemMatcher": [],
+			"label": "pack - views/terraform-plan",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"install - views/terraform-plan",
+				"build - views/terraform-plan"
+			]
 		}
 	],
 	"inputs": [

@@ -14,6 +14,11 @@ jobs:
       inputs: 
         artifact: terraform_cli
         path: $(terraform_extension_dir)
+    - task: DownloadPipelineArtifact@2
+      displayName: download views terraform plan
+      inputs: 
+        artifact: views_terraform_plan
+        path: $(terraform_extension_dir)
     - task: Npm@1
       displayName: version
       inputs:
@@ -25,18 +30,6 @@ jobs:
       inputs:
         workingDir: $(terraform_extension_dir)
         command: ci
-    - task: Npm@1
-      displayName: compile  
-      inputs:
-        workingDir: $(terraform_extension_dir)
-        command: custom
-        customCommand: run compile
-    - task: Npm@1
-      displayName: test  
-      inputs:
-        workingDir: $(terraform_extension_dir)
-        command: custom
-        customCommand: run test
     - task: Npm@1
       displayName: pack
       inputs:  
