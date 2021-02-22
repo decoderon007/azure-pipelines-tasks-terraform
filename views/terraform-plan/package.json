@@ -6,9 +6,7 @@
   "scripts": {
     "clean": "rimraf .bin",
     "test": "jest",
-    "build": "npm run clean && webpack --mode production",
-    "build:dev": "npm run clean && webpack --mode development",
-    "build:test": "npm run clean && webpack --env test --mode development",
+    "build": "npm run clean && webpack",
     "start": "webpack serve --env test --mode development",
     "pack": "rimraf .dist && copyfiles -f \".bin/**/*\" .dist"
   },
