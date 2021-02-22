@@ -9,12 +9,14 @@ module.exports = (env) => {
     entry: './index.tsx',
     output: {
       filename: "index.js",
-      publicPath: "/dist/"
+      path: path.resolve(__dirname, "./.dist"),
+      publicPath: ".dist"
     },
     devtool: "inline-source-map",
     devServer: {
-      https: true,
-      port: 3000
+      port: 3000,
+      publicPath: ".dist",
+      openPage: ".dist/index.html"
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
