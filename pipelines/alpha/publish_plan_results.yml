@@ -6,11 +6,11 @@ jobs:
       inputs: 
         artifact: terraform_templates
         path: $(terraform_extension_dir)
-    - task: TerraformInstaller@0
+    - task: charleszipp.azure-pipelines-tasks-terraform-alpha.azure-pipelines-tasks-terraform-cli.TerraformInstaller@0
       displayName: install terraform
       inputs:
         terraformVersion: 0.14.5
-    - task: charleszipp.azure-pipelines-tasks-terraform-alpha.TerraformCLI@0
+    - task: charleszipp.azure-pipelines-tasks-terraform-alpha.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
       displayName: 'terraform init'
       inputs:
         command: init
@@ -24,7 +24,7 @@ jobs:
         backendAzureRmStorageAccountSku: '$(backend_arm_storage_sku)'
         backendAzureRmContainerName: '$(backend_arm_storage_container)'
         backendAzureRmKey: publish_plan_results.tfstate
-    - task: charleszipp.azure-pipelines-tasks-terraform-alpha.TerraformCLI@0
+    - task: charleszipp.azure-pipelines-tasks-terraform-alpha.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
       displayName: 'terraform plan'
       inputs:
         command: plan
