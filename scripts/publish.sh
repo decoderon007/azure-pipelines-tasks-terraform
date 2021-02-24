@@ -75,12 +75,23 @@ extension_alpha_down(){
         --publisher $publisher\
         --extension-id "azure-pipelines-tasks-terraform-$env" \
         -t $token
+
+    # attempt to delete but ignore failure from not existing
+    npm run delete --prefix $tasks_terraform_cli_dir -- \
+        --service-url "https://dev.azure.com/$org" \
+        -t $token || true
+    
+    # attempt to delete but ignore failure from not existing
+    npm run delete --prefix $tasks_terraform_installer_dir -- \
+        --service-url "https://dev.azure.com/$org" \
+        -t $token || true
 }
 
-tasks_terraform_cli_pack & \
-    tasks_terraform_installer_pack & \
-    views_terraform_plan_pack & \
-    npm ci
+# tasks_terraform_cli_pack & \
+#     tasks_terraform_installer_pack & \
+#     views_terraform_plan_pack
 
+# npm ci
 extension_alpha_down
+
 extension_alpha_up
