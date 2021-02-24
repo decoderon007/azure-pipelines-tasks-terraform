@@ -6,7 +6,7 @@ jobs:
       inputs: 
         artifact: terraform_templates
         path: $(terraform_extension_dir)
-    - task: charleszipp.azure-pipelines-tasks-terraform-alpha.azure-pipelines-tasks-terraform-cli.TerraformInstaller@0
+    - task: charleszipp.azure-pipelines-tasks-terraform-alpha.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
       displayName: install terraform
       inputs:
         terraformVersion: 0.14.5
