@@ -15,6 +15,6 @@ stages:
   - template: build/build_version.yml
 - stage: alpha_test
   variables:
-    - group: env_test
+    - group: env_alpha
   jobs:
     - template: alpha/publish_plan_results.yml
