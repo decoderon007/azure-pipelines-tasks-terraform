@@ -1,0 +1,20 @@
+variables:
+  terraform_extension_dir: $(System.DefaultWorkingDirectory)
+  terraform_installer_dir: $(System.DefaultWorkingDirectory)/tasks/terraform-installer
+  terraform_cli_dir: $(System.DefaultWorkingDirectory)/tasks/terraform-cli
+  views_terraform_plan_dir: $(System.DefaultWorkingDirectory)/views/terraform-plan
+  terraform_templates_dir: $(System.DefaultWorkingDirectory)/templates
+
+name: $(GitVersion.FullSemVer)
+
+stages:
+- stage: version
+  variables:
+    - group: build
+  jobs:
+  - template: build/build_version.yml
+- stage: alpha_test
+  variables:
+    - group: env_test
+  jobs:
+    - template: alpha/publish_plan_results.yml
